@@ -204,7 +204,7 @@ extension Manager {
     */
     public enum MultipartFormDataEncodingResult {
         case success(request: Request, streamingFromDisk: Bool, streamFileURL: URL?)
-        case failure(ErrorProtocol)
+        case failure(NSError)
     }
 
     /**
@@ -237,7 +237,7 @@ extension Manager {
         _ method: Method,
         _ URLString: URLStringConvertible,
         headers: [String: String]? = nil,
-        multipartFormData: (MultipartFormData) -> Void,
+        multipartFormData: @escaping (MultipartFormData) -> Void,
         encodingMemoryThreshold: UInt64 = Manager.MultipartFormDataEncodingMemoryThreshold,
         encodingCompletion: ((MultipartFormDataEncodingResult) -> Void)?)
     {
@@ -277,18 +277,12 @@ extension Manager {
     */
     public func upload(
         _ urlRequest: URLRequestConvertible,
-        multipartFormData: (MultipartFormData) -> Void,
+        multipartFormData: @escaping (MultipartFormData) -> Void,
         encodingMemoryThreshold: UInt64 = Manager.MultipartFormDataEncodingMemoryThreshold,
         encodingCompletion: ((MultipartFormDataEncodingResult) -> Void)?)
     {
 
-        let attributes: DispatchQueue.GlobalAttributes
-        if #available(OSXApplicationExtension 10.10, *) {
-            attributes = DispatchQueue.GlobalAttributes.qosDefault
-        } else {
-            attributes = []
-        }
-        DispatchQueue.global(attributes: attributes).async {
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
             let formData = MultipartFormData()
             multipartFormData(formData)
 

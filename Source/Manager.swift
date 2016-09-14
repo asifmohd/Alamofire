@@ -104,7 +104,7 @@ public class Manager {
         ]
     }()
 
-    let queue = DispatchQueue(label: "Alamofire Manager Queue", attributes: DispatchQueueAttributes.serial)
+    let queue = DispatchQueue(label: "Alamofire Manager Queue")
 
     /// The underlying session.
     public let session: URLSession
@@ -246,7 +246,7 @@ public class Manager {
     */
     public class SessionDelegate: NSObject, URLSessionDelegate, URLSessionTaskDelegate, URLSessionDataDelegate, URLSessionDownloadDelegate {
         private var subdelegates: [Int: Request.TaskDelegate] = [:]
-        private let subdelegateQueue = DispatchQueue(label: "Alamofire Sub Delegate Queue", attributes: DispatchQueueAttributes.concurrent)
+        private let subdelegateQueue = DispatchQueue(label: "Alamofire Sub Delegate Queue", attributes: DispatchQueue.Attributes.concurrent)
 
         /// Access the task delegate for the specified task in a thread-safe manner.
         public subscript(task: URLSessionTask) -> Request.TaskDelegate? {
@@ -426,7 +426,7 @@ public class Manager {
             _ session: URLSession,
             task: URLSessionTask,
             didReceive challenge: URLAuthenticationChallenge,
-            completionHandler: (Foundation.URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
+            completionHandler: @escaping (Foundation.URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
         {
             guard taskDidReceiveChallengeWithCompletion == nil else {
                 taskDidReceiveChallengeWithCompletion?(session, task, challenge, completionHandler)
@@ -458,7 +458,7 @@ public class Manager {
         public func urlSession(
             _ session: URLSession,
             task: URLSessionTask,
-            needNewBodyStream completionHandler: (InputStream?) -> Void)
+            needNewBodyStream completionHandler: @escaping (InputStream?) -> Void)
         {
             guard taskNeedNewBodyStreamWithCompletion == nil else {
                 taskNeedNewBodyStreamWithCompletion?(session, task, completionHandler)
@@ -628,7 +628,7 @@ public class Manager {
             _ session: URLSession,
             dataTask: URLSessionDataTask,
             willCacheResponse proposedResponse: CachedURLResponse,
-            completionHandler: (CachedURLResponse?) -> Void)
+            completionHandler: @escaping (CachedURLResponse?) -> Void)
         {
             guard dataTaskWillCacheResponseWithCompletion == nil else {
                 dataTaskWillCacheResponseWithCompletion?(session, dataTask, proposedResponse, completionHandler)
@@ -773,7 +773,7 @@ public class Manager {
             case #selector(URLSessionDataDelegate.urlSession(_:dataTask:didReceive:completionHandler:)):
                 return (dataTaskDidReceiveResponse != nil || dataTaskDidReceiveResponseWithCompletion != nil)
             default:
-                return self.dynamicType.instancesRespond(to: selector)
+                return type(of: self).instancesRespond(to: selector)
             }
         }
     }

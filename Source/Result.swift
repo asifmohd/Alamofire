@@ -32,9 +32,9 @@ import Foundation
     - Failure: The request encountered an error resulting in a failure. The associated values are the original data
                provided by the server as well as the error that caused the failure.
 */
-public enum Result<Value, Error: ErrorProtocol> {
+public enum Result<Value, Error: NSError> {
     case success(Value)
-    case failure(Error)
+    case failure(NSError)
 
     /// Returns `true` if the result is a success, `false` otherwise.
     public var isSuccess: Bool {
@@ -62,7 +62,7 @@ public enum Result<Value, Error: ErrorProtocol> {
     }
 
     /// Returns the associated error value if the result is a failure, `nil` otherwise.
-    public var error: Error? {
+    public var error: NSError? {
         switch self {
         case .success:
             return nil

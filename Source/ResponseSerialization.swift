@@ -34,7 +34,7 @@ public protocol ResponseSerializerType {
     associatedtype SerializedObject
 
     /// The type of error to be created by this `ResponseSerializer` if serialization fails.
-    associatedtype ErrorObject: ErrorProtocol
+    associatedtype ErrorObject: NSError
 
     /**
         A closure used by response handlers that takes a request, response, data and error and returns a result.
@@ -47,7 +47,7 @@ public protocol ResponseSerializerType {
 /**
     A generic `ResponseSerializerType` used to serialize a request, response, and data into a serialized object.
 */
-public struct ResponseSerializer<Value, Error: ErrorProtocol>: ResponseSerializerType {
+public struct ResponseSerializer<Value, Error: NSError>: ResponseSerializerType {
     /// The type of serialized object to be created by this `ResponseSerializer`.
     public typealias SerializedObject = Value
 
@@ -66,7 +66,7 @@ public struct ResponseSerializer<Value, Error: ErrorProtocol>: ResponseSerialize
 
         - returns: The new generic response serializer instance.
     */
-    public init(serializeResponse: (Foundation.URLRequest?, HTTPURLResponse?, Data?, NSError?) -> Result<Value, Error>) {
+    public init(serializeResponse: @escaping (Foundation.URLRequest?, HTTPURLResponse?, Data?, NSError?) -> Result<Value, Error>) {
         self.serializeResponse = serializeResponse
     }
 }
@@ -86,12 +86,12 @@ extension Request {
     @discardableResult
     public func response(
         queue: DispatchQueue? = nil,
-        completionHandler: (Foundation.URLRequest?, HTTPURLResponse?, Data?, NSError?) -> Void)
+        completionHandler: @escaping (Foundation.URLRequest?, HTTPURLResponse?, Data?, NSError?) -> Void)
         -> Self
     {
         delegate.queue.addOperation {
             (queue ?? DispatchQueue.main).async {
-                completionHandler(self.request, self.response, self.delegate.data, self.delegate.error)
+                completionHandler(self.request, self.responseHTTPURL, self.delegate.data, self.delegate.error)
             }
         }
 
@@ -111,13 +111,13 @@ extension Request {
     public func response<T: ResponseSerializerType>(
         queue: DispatchQueue? = nil,
         responseSerializer: T,
-        completionHandler: (Response<T.SerializedObject, T.ErrorObject>) -> Void)
+        completionHandler: @escaping (Response<T.SerializedObject, T.ErrorObject>) -> Void)
         -> Self
     {
         delegate.queue.addOperation {
             let result = responseSerializer.serializeResponse(
                 self.request,
-                self.response,
+                self.responseHTTPURL,
                 self.delegate.data,
                 self.delegate.error
             )
@@ -134,7 +134,7 @@ extension Request {
 
             let response = Response<T.SerializedObject, T.ErrorObject>(
                 request: self.request,
-                response: self.response,
+                response: self.responseHTTPURL,
                 data: self.delegate.data,
                 result: result,
                 timeline: timeline
@@ -182,7 +182,7 @@ extension Request {
     @discardableResult
     public func responseData(
         queue: DispatchQueue? = nil,
-        completionHandler: (Response<Data, NSError>) -> Void)
+        completionHandler: @escaping (Response<Data, NSError>) -> Void)
         -> Self
     {
         return response(queue: queue, responseSerializer: Request.dataResponseSerializer(), completionHandler: completionHandler)
@@ -221,7 +221,7 @@ extension Request {
 
             if let encodingName = response?.textEncodingName, convertedEncoding == nil {
                 convertedEncoding = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(
-                    CFStringConvertIANACharSetNameToEncoding(encodingName))
+                    CFStringConvertIANACharSetNameToEncoding(encodingName as CFString!))
                 )
             }
 
@@ -251,7 +251,7 @@ extension Request {
     public func responseString(
         queue: DispatchQueue? = nil,
         encoding: String.Encoding? = nil,
-        completionHandler: (Response<String, NSError>) -> Void)
+        completionHandler: @escaping (Response<String, NSError>) -> Void)
         -> Self
     {
         return response(
@@ -276,7 +276,7 @@ extension Request {
     */
     public static func JSONResponseSerializer(
         options: JSONSerialization.ReadingOptions = .allowFragments)
-        -> ResponseSerializer<AnyObject, NSError>
+        -> ResponseSerializer<Any, NSError>
     {
         return ResponseSerializer { _, response, data, error in
             guard error == nil else { return .failure(error!) }
@@ -310,7 +310,7 @@ extension Request {
     public func responseJSON(
         queue: DispatchQueue? = nil,
         options: JSONSerialization.ReadingOptions = .allowFragments,
-        completionHandler: (Response<AnyObject, NSError>) -> Void)
+        completionHandler: @escaping (Response<Any, NSError>) -> Void)
         -> Self
     {
         return response(
@@ -335,7 +335,7 @@ extension Request {
     */
     public static func propertyListResponseSerializer(
         options: PropertyListSerialization.ReadOptions = PropertyListSerialization.ReadOptions())
-        -> ResponseSerializer<AnyObject, NSError>
+        -> ResponseSerializer<Any, NSError>
     {
         return ResponseSerializer { _, response, data, error in
             guard error == nil else { return .failure(error!) }
@@ -370,7 +370,7 @@ extension Request {
     public func responsePropertyList(
         queue: DispatchQueue? = nil,
         options: PropertyListSerialization.ReadOptions = PropertyListSerialization.ReadOptions(),
-        completionHandler: (Response<AnyObject, NSError>) -> Void)
+        completionHandler: @escaping (Response<Any, NSError>) -> Void)
         -> Self
     {
         return response(

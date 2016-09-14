@@ -45,7 +45,7 @@ public class Request {
     public var request: Foundation.URLRequest? { return task.originalRequest }
 
     /// The response received from the server, if any.
-    public var response: HTTPURLResponse? { return task.response as? HTTPURLResponse }
+    public var responseHTTPURL: HTTPURLResponse? { return task.response as? HTTPURLResponse }
 
     /// The progress of the request lifecycle.
     public var progress: Progress { return delegate.progress }
@@ -342,8 +342,7 @@ public class Request {
                     self.error = error
 
                     if let downloadDelegate = self as? DownloadTaskDelegate,
-                       let userInfo = error.userInfo as? [String: AnyObject],
-                       let resumeData = userInfo[NSURLSessionDownloadTaskResumeData] as? Data
+                       let resumeData = error.userInfo[NSURLSessionDownloadTaskResumeData] as? Data
                     {
                         downloadDelegate.resumeData = resumeData
                     }
@@ -370,8 +369,8 @@ public class Request {
         }
 
         private var expectedContentLength: Int64?
-        private var dataProgress: ((bytesReceived: Int64, totalBytesReceived: Int64, totalBytesExpectedToReceive: Int64) -> Void)?
-        private var dataStream: ((data: Data) -> Void)?
+        var dataProgress: ((_ bytesReceived: Int64, _ totalBytesReceived: Int64, _ totalBytesExpectedToReceive: Int64) -> Void)?
+        var dataStream: ((_ data: Data) -> Void)?
 
         override init(task: URLSessionTask) {
             mutableData = NSMutableData()
@@ -421,7 +420,7 @@ public class Request {
                 dataTaskDidReceiveData(session, dataTask, data)
             } else {
                 if let dataStream = dataStream {
-                    dataStream(data: data)
+                    dataStream(data)
                 } else {
                     mutableData.append(data)
                 }
@@ -433,9 +432,9 @@ public class Request {
                 progress.completedUnitCount = totalBytesReceived
 
                 dataProgress?(
-                    bytesReceived: Int64(data.count),
-                    totalBytesReceived: totalBytesReceived,
-                    totalBytesExpectedToReceive: totalBytesExpected
+                    Int64(data.count),
+                    totalBytesReceived,
+                    totalBytesExpected
                 )
             }
         }
@@ -476,7 +475,7 @@ extension Request: CustomStringConvertible {
             components.append(URLString)
         }
 
-        if let response = response {
+        if let response = responseHTTPURL {
             components.append("(\(response.statusCode))")
         }
 
@@ -525,15 +524,15 @@ extension Request: CustomDebugStringConvertible {
             if let cookieStorage = session.configuration.httpCookieStorage,
                let cookies = cookieStorage.cookies(for: URL), !cookies.isEmpty
             {
-                let string = cookies.reduce("") { $0 + "\($1.name)=\($1.value ?? String());" }
+                let string = cookies.reduce("") { $0 + "\($1.name)=\($1.value);" }
                 components.append("-b \"\(string.substring(to: string.characters.index(before: string.endIndex)))\"")
             }
         }
 
-        var headers: [NSObject: AnyObject] = [:]
+        var headers: [AnyHashable: Any] = [:]
 
         if let additionalHeaders = session.configuration.httpAdditionalHeaders {
-            for (field, value) in additionalHeaders where field != "Cookie" {
+            for (field, value) in additionalHeaders where field != AnyHashable("Cookie") {
                 headers[field] = value
             }
         }
@@ -557,7 +556,7 @@ extension Request: CustomDebugStringConvertible {
             components.append("-d \"\(escapedBody)\"")
         }
 
-        components.append("\"\(URL.absoluteString!)\"")
+        components.append("\"\(URL.absoluteString)\"")
 
         return components.joined(separator: " \\\n\t")
     }

@@ -54,7 +54,7 @@ extension Request {
     */
     public func validate(_ validation: Validation) -> Self {
         delegate.queue.addOperation {
-            if let response = self.response, self.delegate.error == nil,
+            if let response = self.responseHTTPURL, self.delegate.error == nil,
                case let .failure(error) = validation(self.request, response)
             {
                 self.delegate.error = error

@@ -48,7 +48,7 @@ extension String: URLStringConvertible {
 }
 
 extension URL: URLStringConvertible {
-    public var urlString: String { return absoluteString! }
+    public var urlString: String { return absoluteString }
 }
 
 extension URLComponents: URLStringConvertible {
@@ -256,7 +256,7 @@ public func upload(
     _ method: Method,
     _ URLString: URLStringConvertible,
     headers: [String: String]? = nil,
-    multipartFormData: (MultipartFormData) -> Void,
+    multipartFormData: @escaping (MultipartFormData) -> Void,
     encodingMemoryThreshold: UInt64 = Manager.MultipartFormDataEncodingMemoryThreshold,
     encodingCompletion: ((Manager.MultipartFormDataEncodingResult) -> Void)?)
 {
@@ -281,7 +281,7 @@ public func upload(
 */
 public func upload(
     _ URLRequest: URLRequestConvertible,
-    multipartFormData: (MultipartFormData) -> Void,
+    multipartFormData: @escaping (MultipartFormData) -> Void,
     encodingMemoryThreshold: UInt64 = Manager.MultipartFormDataEncodingMemoryThreshold,
     encodingCompletion: ((Manager.MultipartFormDataEncodingResult) -> Void)?)
 {

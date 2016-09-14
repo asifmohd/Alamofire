@@ -120,9 +120,9 @@ extension Manager.SessionDelegate: URLSessionStreamDelegate {
     }
 
     /// Overrides default behavior for NSURLSessionStreamDelegate method `URLSession:streamTask:didBecomeInputStream:outputStream:`.
-    public var streamTaskDidBecomeInputStream: ((Foundation.URLSession, URLSessionStreamTask, InputStream, NSOutputStream) -> Void)? {
+    public var streamTaskDidBecomeInputStream: ((Foundation.URLSession, URLSessionStreamTask, InputStream, OutputStream) -> Void)? {
         get {
-            return _streamTaskDidBecomeInputStream as? (Foundation.URLSession, URLSessionStreamTask, InputStream, NSOutputStream) -> Void
+            return _streamTaskDidBecomeInputStream as? (Foundation.URLSession, URLSessionStreamTask, InputStream, OutputStream) -> Void
         }
         set {
             _streamTaskDidBecomeInputStream = newValue
@@ -173,7 +173,7 @@ extension Manager.SessionDelegate: URLSessionStreamDelegate {
         _ session: URLSession,
         streamTask: URLSessionStreamTask,
         didBecome inputStream: InputStream,
-        outputStream: NSOutputStream)
+        outputStream: OutputStream)
     {
         streamTaskDidBecomeInputStream?(session, streamTask, inputStream, outputStream)
     }
