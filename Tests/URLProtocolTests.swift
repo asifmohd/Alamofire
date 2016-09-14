@@ -167,7 +167,7 @@ class URLProtocolTestCase: BaseTestCase {
         XCTAssertNotNil(data, "data should not be nil")
         XCTAssertNil(error, "error should be nil")
 
-        if let headers = response?.allHeaderFields as? [String: String] {
+        if let headers = response?.allHeaderFields as? [AnyHashable: String] {
             XCTAssertEqual(headers["request-header"], "foobar")
 
             // Configuration headers are only passed in on iOS 9.0+

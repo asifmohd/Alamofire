@@ -206,7 +206,7 @@ public class Manager {
     public func request(
         _ method: Method,
         _ URLString: URLStringConvertible,
-        parameters: [String: AnyObject]? = nil,
+        parameters: [String: Any]? = nil,
         encoding: ParameterEncoding = .url,
         headers: [String: String]? = nil)
         -> Request

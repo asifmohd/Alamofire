@@ -116,7 +116,7 @@ class DownloadResponseTestCase: BaseTestCase {
         XCTAssertNil(error, "error should be nil")
 
         let fileManager = FileManager.default
-        let directory = fileManager.urlsForDirectory(searchPathDirectory, inDomains: self.searchPathDomain)[0]
+        let directory = fileManager.urls(for: searchPathDirectory, in: self.searchPathDomain)[0]
 
         do {
             let contents = try fileManager.contentsOfDirectory(
@@ -131,7 +131,7 @@ class DownloadResponseTestCase: BaseTestCase {
             let suggestedFilename = "\(numberOfLines).json"
             #endif
 
-            let predicate = Predicate(format: "lastPathComponent = '\(suggestedFilename)'")
+            let predicate = NSPredicate(format: "lastPathComponent = '\(suggestedFilename)'")
             let filteredContents = (contents as NSArray).filtered(using: predicate)
             XCTAssertEqual(filteredContents.count, 1, "should have one file in Documents")
 
@@ -167,7 +167,7 @@ class DownloadResponseTestCase: BaseTestCase {
         let urlString = "https://httpbin.org/bytes/\(randomBytes)"
 
         let fileManager = FileManager.default
-        let directory = fileManager.urlsForDirectory(searchPathDirectory, inDomains: self.searchPathDomain)[0]
+        let directory = fileManager.urls(for: searchPathDirectory, in: self.searchPathDomain)[0]
         let filename = "test_download_data"
         let fileURL = try! directory.appendingPathComponent(filename)
 
@@ -178,7 +178,7 @@ class DownloadResponseTestCase: BaseTestCase {
         var responseRequest: URLRequest?
         var responseResponse: HTTPURLResponse?
         var responseData: Data?
-        var responseError: ErrorProtocol?
+        var responseError: NSError?
 
         // When
         let download = Alamofire.download(.GET, urlString) { _, _ in
@@ -355,7 +355,7 @@ class DownloadResumeDataTestCase: BaseTestCase {
 
         var request: URLRequest?
         var response: HTTPURLResponse?
-        var data: AnyObject?
+        var data: Any?
         var error: NSError?
 
         // When
@@ -388,7 +388,7 @@ class DownloadResumeDataTestCase: BaseTestCase {
 
         var request: URLRequest?
         var response: HTTPURLResponse?
-        var data: AnyObject?
+        var data: Any?
         var error: NSError?
 
         // When
@@ -427,7 +427,7 @@ class DownloadResumeDataTestCase: BaseTestCase {
     func testThatCancelledDownloadResumeDataIsAvailableWithJSONResponseSerializer() {
         // Given
         let expectation = self.expectation(description: "Download should be cancelled")
-        var response: Response<AnyObject, NSError>?
+        var response: Response<Any, NSError>?
 
         // When
         let download = Alamofire.download(.GET, urlString, destination: destination)

@@ -222,7 +222,7 @@ class MultipartFormDataEncodingTestCase: BaseTestCase {
             expectedData.append(try! Data(contentsOf: unicornImageURL))
             expectedData.append(BoundaryGenerator.boundaryData(boundaryType: .final, boundaryKey: boundary))
 
-            XCTAssertEqual(encodedData, expectedData, "data should match expected data")
+            XCTAssertEqual(encodedData, expectedData as Data, "data should match expected data")
         }
     }
 
@@ -268,7 +268,7 @@ class MultipartFormDataEncodingTestCase: BaseTestCase {
             expectedData.append(try! Data(contentsOf: rainbowImageURL))
             expectedData.append(BoundaryGenerator.boundaryData(boundaryType: .final, boundaryKey: boundary))
 
-            XCTAssertEqual(encodedData, expectedData, "data should match expected data")
+            XCTAssertEqual(encodedData, expectedData as Data, "data should match expected data")
         }
     }
 
@@ -313,7 +313,7 @@ class MultipartFormDataEncodingTestCase: BaseTestCase {
             expectedData.append(try! Data(contentsOf: unicornImageURL))
             expectedData.append(BoundaryGenerator.boundaryData(boundaryType: .final, boundaryKey: boundary))
 
-            XCTAssertEqual(encodedData, expectedData, "data should match expected data")
+            XCTAssertEqual(encodedData, expectedData as Data, "data should match expected data")
         }
     }
 
@@ -376,7 +376,7 @@ class MultipartFormDataEncodingTestCase: BaseTestCase {
             expectedData.append(try! Data(contentsOf: rainbowImageURL))
             expectedData.append(BoundaryGenerator.boundaryData(boundaryType: .final, boundaryKey: boundary))
 
-            XCTAssertEqual(encodedData, expectedData, "data should match expected data")
+            XCTAssertEqual(encodedData, expectedData as Data, "data should match expected data")
         }
     }
 
@@ -440,7 +440,7 @@ class MultipartFormDataEncodingTestCase: BaseTestCase {
             expectedData.append(try! Data(contentsOf: rainbowImageURL))
             expectedData.append(BoundaryGenerator.boundaryData(boundaryType: .final, boundaryKey: boundary))
 
-            XCTAssertEqual(encodedData, expectedData, "data should match expected data")
+            XCTAssertEqual(encodedData, expectedData as Data, "data should match expected data")
         }
     }
 }
@@ -566,7 +566,7 @@ class MultipartFormDataWriteEncodedDataToDiskTestCase: BaseTestCase {
             expectedFileData.append(try! Data(contentsOf: unicornImageURL))
             expectedFileData.append(BoundaryGenerator.boundaryData(boundaryType: .final, boundaryKey: boundary))
 
-            XCTAssertEqual(fileData, expectedFileData, "file data should match expected file data")
+            XCTAssertEqual(fileData, expectedFileData as Data, "file data should match expected file data")
         } else {
             XCTFail("file data should not be nil")
         }
@@ -615,7 +615,7 @@ class MultipartFormDataWriteEncodedDataToDiskTestCase: BaseTestCase {
             expectedFileData.append(try! Data(contentsOf: rainbowImageURL))
             expectedFileData.append(BoundaryGenerator.boundaryData(boundaryType: .final, boundaryKey: boundary))
 
-            XCTAssertEqual(fileData, expectedFileData, "file data should match expected file data")
+            XCTAssertEqual(fileData, expectedFileData as Data, "file data should match expected file data")
         } else {
             XCTFail("file data should not be nil")
         }
@@ -663,7 +663,7 @@ class MultipartFormDataWriteEncodedDataToDiskTestCase: BaseTestCase {
             expectedFileData.append(try! Data(contentsOf: unicornImageURL))
             expectedFileData.append(BoundaryGenerator.boundaryData(boundaryType: .final, boundaryKey: boundary))
 
-            XCTAssertEqual(fileData, expectedFileData, "file data should match expected file data")
+            XCTAssertEqual(fileData, expectedFileData as Data, "file data should match expected file data")
         } else {
             XCTFail("file data should not be nil")
         }
@@ -730,7 +730,7 @@ class MultipartFormDataWriteEncodedDataToDiskTestCase: BaseTestCase {
             expectedFileData.append(try! Data(contentsOf: rainbowImageURL))
             expectedFileData.append(BoundaryGenerator.boundaryData(boundaryType: .final, boundaryKey: boundary))
 
-            XCTAssertEqual(fileData, expectedFileData, "file data should match expected file data")
+            XCTAssertEqual(fileData, expectedFileData as Data, "file data should match expected file data")
         } else {
             XCTFail("file data should not be nil")
         }
@@ -797,7 +797,7 @@ class MultipartFormDataWriteEncodedDataToDiskTestCase: BaseTestCase {
             expectedFileData.append(try! Data(contentsOf: rainbowImageURL))
             expectedFileData.append(BoundaryGenerator.boundaryData(boundaryType: .final, boundaryKey: boundary))
 
-            XCTAssertEqual(fileData, expectedFileData, "file data should match expected file data")
+            XCTAssertEqual(fileData, expectedFileData as Data, "file data should match expected file data")
         } else {
             XCTFail("file data should not be nil")
         }

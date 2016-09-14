@@ -66,7 +66,7 @@ public enum ParameterEncoding {
     case urlEncodedInURL
     case json
     case propertyList(PropertyListSerialization.PropertyListFormat, PropertyListSerialization.WriteOptions)
-    case custom((URLRequestConvertible, [String: AnyObject]?) -> (URLRequest, NSError?))
+    case custom((URLRequestConvertible, [String: Any]?) -> (URLRequest, NSError?))
 
     /**
         Creates a URL request by encoding parameters and applying them onto an existing request.
@@ -79,7 +79,7 @@ public enum ParameterEncoding {
     */
     public func encode(
         _ URLRequest: URLRequestConvertible,
-        parameters: [String: AnyObject]?)
+        parameters: [String: Any]?)
         -> (Foundation.URLRequest, NSError?)
     {
         var urlRequest = URLRequest.urlRequest
@@ -90,7 +90,7 @@ public enum ParameterEncoding {
 
         switch self {
         case .url, .urlEncodedInURL:
-            func query(_ parameters: [String: AnyObject]) -> String {
+            func query(_ parameters: [String: Any]) -> String {
                 var components: [(String, String)] = []
 
                 for key in parameters.keys.sorted(by: <) {
@@ -182,10 +182,10 @@ public enum ParameterEncoding {
 
         - returns: The percent-escaped, URL encoded query string components.
     */
-    public func queryComponents(_ key: String, _ value: AnyObject) -> [(String, String)] {
+    public func queryComponents(_ key: String, _ value: Any) -> [(String, String)] {
         var components: [(String, String)] = []
 
-        if let dictionary = value as? [String: AnyObject] {
+        if let dictionary = value as? [String: Any] {
             for (nestedKey, value) in dictionary {
                 components += queryComponents("\(key)[\(nestedKey)]", value)
             }

@@ -257,7 +257,7 @@ class ContentTypeValidationTestCase: BaseTestCase {
         }
 
         class MockRequest: Request {
-            override var response: HTTPURLResponse? {
+            override var responseHTTPURL: HTTPURLResponse? {
                 return MockHTTPURLResponse(
                     url: URL(string: request!.urlString)!,
                     statusCode: 204,

@@ -81,7 +81,7 @@ extension Manager {
     public func download(
         _ method: Method,
         _ URLString: URLStringConvertible,
-        parameters: [String: AnyObject]? = nil,
+        parameters: [String: Any]? = nil,
         encoding: ParameterEncoding = .url,
         headers: [String: String]? = nil,
         destination: Request.DownloadFileDestination)

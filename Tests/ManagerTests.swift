@@ -251,7 +251,7 @@ class ManagerConfigurationHeadersTestCase: BaseTestCase {
 
         let expectation = self.expectation(description: "request should complete successfully")
 
-        var response: Response<AnyObject, NSError>?
+        var response: Response<Any, NSError>?
 
         // When
         manager.request(.GET, "https://httpbin.org/headers")
@@ -269,7 +269,7 @@ class ManagerConfigurationHeadersTestCase: BaseTestCase {
             XCTAssertNotNil(response.data, "data should not be nil")
             XCTAssertTrue(response.result.isSuccess, "result should be a success")
 
-            if let headers = response.result.value?["headers" as NSString] as? [String: String],
+            if let headers = (response.result.value as AnyObject?)?["headers" as NSString] as? [String: String],
                let authorization = headers["Authorization"]
             {
                 XCTAssertEqual(authorization, "Bearer 123456", "authorization header value does not match")

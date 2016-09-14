@@ -460,7 +460,7 @@ class JSONParameterEncodingTestCase: ParameterEncodingTestCase {
 
     func testJSONParameterEncodeComplexParameters() {
         // Given
-        let parameters = [
+        let parameters: [String : Any] = [
             "foo": "bar",
             "baz": ["a", 1, true],
             "qux": [
@@ -541,7 +541,7 @@ class PropertyListParameterEncodingTestCase: ParameterEncodingTestCase {
 
     func testPropertyListParameterEncodeComplexParameters() {
         // Given
-        let parameters = [
+        let parameters: [String : Any] = [
             "foo": "bar",
             "baz": ["a", 1, true],
             "qux": [
@@ -588,13 +588,13 @@ class PropertyListParameterEncodingTestCase: ParameterEncodingTestCase {
         let date: Date = Date()
         let data: Data = "data".data(using: String.Encoding.utf8, allowLossyConversion: false)!
 
-        let parameters = [
+        let parameters: [String : Any] = [
             "date": date,
             "data": data
         ]
 
         // When
-        let (urlRequest, error) = encoding.encode(self.urlRequest, parameters: parameters as? [String : AnyObject])
+        let (urlRequest, error) = encoding.encode(self.urlRequest, parameters: parameters)
 
         // Then
         XCTAssertNil(error, "error should be nil")
@@ -613,9 +613,9 @@ class PropertyListParameterEncodingTestCase: ParameterEncodingTestCase {
                     from: HTTPBody,
                     options: PropertyListSerialization.MutabilityOptions(),
                     format: nil
-                )
-                XCTAssertTrue(plist.value(forKey: "date") is NSDate, "date is not NSDate")
-                XCTAssertTrue(plist.value(forKey: "data") is NSData, "data is not NSData")
+                ) as AnyObject
+                XCTAssertTrue(plist.value(forKey: "date") is Date, "date is not Date")
+                XCTAssertTrue(plist.value(forKey: "data") is Data, "data is not Data")
             } catch {
                 XCTFail("plist should not be nil")
             }
@@ -648,7 +648,7 @@ class CustomParameterEncodingTestCase: ParameterEncodingTestCase {
 
     func testCustomParameterEncode() {
         // Given
-        let encodingClosure: (URLRequestConvertible, [String: AnyObject]?) -> (Foundation.URLRequest, NSError?) = { urlRequest, parameters in
+        let encodingClosure: (URLRequestConvertible, [String: Any]?) -> (Foundation.URLRequest, NSError?) = { urlRequest, parameters in
             guard let parameters = parameters else { return (urlRequest.urlRequest, nil) }
 
             var urlString = urlRequest.urlRequest.urlString + "?"
@@ -667,7 +667,7 @@ class CustomParameterEncodingTestCase: ParameterEncodingTestCase {
         // Then
         let url = Foundation.URL(string: "https://example.com")!
         let urlRequest = Foundation.URLRequest(url: url)
-        let parameters: [String: AnyObject] = ["foo": "bar"]
+        let parameters: [String: Any] = ["foo": "bar"]
 
         let result = encoding.encode(urlRequest, parameters: parameters)
         XCTAssertEqual(result.0.urlString, "https://example.com?foo=bar")

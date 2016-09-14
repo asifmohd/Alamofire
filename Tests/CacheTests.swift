@@ -132,7 +132,7 @@ class CacheTestCase: BaseTestCase {
     */
     func primeCachedResponses() {
         let dispatchGroup = DispatchGroup()
-        let serialQueue = DispatchQueue(label: "com.alamofire.cache-tests", attributes: DispatchQueueAttributes.serial)
+        let serialQueue = DispatchQueue(label: "com.alamofire.cache-tests")
 
         for cacheControl in CacheControl.allValues {
             dispatchGroup.enter()
@@ -156,7 +156,8 @@ class CacheTestCase: BaseTestCase {
 
         // Pause for 2 additional seconds to ensure all timestamps will be different
         dispatchGroup.enter()
-        serialQueue.after(when: DispatchTime.now() + Double(Int64(2.0 * Float(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)) {
+        let dispatchAfter2Sec = DispatchTime(uptimeNanoseconds: DispatchTime.now().uptimeNanoseconds + UInt64(2.0) * NSEC_PER_SEC)
+        serialQueue.asyncAfter(deadline: dispatchAfter2Sec) {
             dispatchGroup.leave()
         }
 
@@ -180,7 +181,7 @@ class CacheTestCase: BaseTestCase {
         cacheControl: String,
         cachePolicy: NSURLRequest.CachePolicy = .useProtocolCachePolicy,
         queue: DispatchQueue = DispatchQueue.main,
-        completion: (Foundation.URLRequest?, HTTPURLResponse?) -> Void)
+        completion: @escaping (Foundation.URLRequest?, HTTPURLResponse?) -> Void)
         -> Foundation.URLRequest
     {
         let urlRequest = URLRequest(cacheControl: cacheControl, cachePolicy: cachePolicy)

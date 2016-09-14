@@ -123,7 +123,7 @@ class RequestResponseTestCase: BaseTestCase {
         var responseRequest: URLRequest?
         var responseResponse: HTTPURLResponse?
         var responseData: Data?
-        var responseError: ErrorProtocol?
+        var responseError: NSError?
 
         // When
         let request = Alamofire.request(.GET, URLString)
@@ -202,7 +202,7 @@ class RequestResponseTestCase: BaseTestCase {
         var responseRequest: URLRequest?
         var responseResponse: HTTPURLResponse?
         var responseData: Data?
-        var responseError: ErrorProtocol?
+        var responseError: NSError?
 
         // When
         let request = Alamofire.request(.GET, URLString)
@@ -290,7 +290,7 @@ class RequestResponseTestCase: BaseTestCase {
 
         let expectation = self.expectation(description: "request should succeed")
 
-        var response: Response<AnyObject, NSError>?
+        var response: Response<Any, NSError>?
 
         // When
         Alamofire.request(.POST, URLString, parameters: parameters)
@@ -348,7 +348,7 @@ class RequestResponseTestCase: BaseTestCase {
 
         let expectation = self.expectation(description: "request should succeed")
 
-        var response: Response<AnyObject, NSError>?
+        var response: Response<Any, NSError>?
 
         // When
         Alamofire.request(.POST, URLString, parameters: parameters)
@@ -384,7 +384,7 @@ class RequestResponseTestCase: BaseTestCase {
 // MARK: -
 
 extension Request {
-    private func preValidate(_ operation: (Void) -> Void) -> Self {
+    fileprivate func preValidate(_ operation: @escaping (Void) -> Void) -> Self {
         delegate.queue.addOperation {
             operation()
         }
@@ -392,7 +392,7 @@ extension Request {
         return self
     }
 
-    private func postValidate(_ operation: (Void) -> Void) -> Self {
+    fileprivate func postValidate(_ operation: @escaping (Void) -> Void) -> Self {
         delegate.queue.addOperation {
             operation()
         }
