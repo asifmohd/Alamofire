@@ -315,7 +315,7 @@ public func download(
     parameters: [String: Any]? = nil,
     encoding: ParameterEncoding = .url,
     headers: [String: String]? = nil,
-    destination: Request.DownloadFileDestination)
+    destination: @escaping Request.DownloadFileDestination)
     -> Request
 {
     return Manager.sharedInstance.download(
@@ -336,7 +336,7 @@ public func download(
 
     - returns: The created download request.
 */
-public func download(_ URLRequest: URLRequestConvertible, destination: Request.DownloadFileDestination) -> Request {
+public func download(_ URLRequest: URLRequestConvertible, destination: @escaping Request.DownloadFileDestination) -> Request {
     return Manager.sharedInstance.download(URLRequest, destination: destination)
 }
 
@@ -353,6 +353,6 @@ public func download(_ URLRequest: URLRequestConvertible, destination: Request.D
 
     - returns: The created download request.
 */
-public func download(resumeData data: Data, destination: Request.DownloadFileDestination) -> Request {
+public func download(resumeData data: Data, destination: @escaping Request.DownloadFileDestination) -> Request {
     return Manager.sharedInstance.download(data, destination: destination)
 }

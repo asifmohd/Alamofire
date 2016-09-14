@@ -392,7 +392,7 @@ public class Request {
             _ session: URLSession,
             dataTask: URLSessionDataTask,
             didReceive response: URLResponse,
-            completionHandler: ((Foundation.URLSession.ResponseDisposition) -> Void))
+            completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)
         {
             var disposition: Foundation.URLSession.ResponseDisposition = .allow
 
@@ -443,7 +443,7 @@ public class Request {
             _ session: URLSession,
             dataTask: URLSessionDataTask,
             willCacheResponse proposedResponse: CachedURLResponse,
-            completionHandler: ((CachedURLResponse?) -> Void))
+            completionHandler: @escaping (CachedURLResponse?) -> Void)
         {
             var cachedResponse: CachedURLResponse? = proposedResponse
 

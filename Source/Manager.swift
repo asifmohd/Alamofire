@@ -310,7 +310,7 @@ public class Manager {
         public func urlSession(
             _ session: URLSession,
             didReceive challenge: URLAuthenticationChallenge,
-            completionHandler: ((Foundation.URLSession.AuthChallengeDisposition, URLCredential?) -> Void))
+            completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
         {
             guard sessionDidReceiveChallengeWithCompletion == nil else {
                 sessionDidReceiveChallengeWithCompletion?(session, challenge, completionHandler)

@@ -30,7 +30,7 @@ extension Manager {
         case resumeData(Data)
     }
 
-    private func download(_ downloadable: Downloadable, destination: Request.DownloadFileDestination) -> Request {
+    private func download(_ downloadable: Downloadable, destination: @escaping Request.DownloadFileDestination) -> Request {
         var downloadTask: URLSessionDownloadTask!
 
         switch downloadable {
@@ -84,7 +84,7 @@ extension Manager {
         parameters: [String: Any]? = nil,
         encoding: ParameterEncoding = .url,
         headers: [String: String]? = nil,
-        destination: Request.DownloadFileDestination)
+        destination: @escaping Request.DownloadFileDestination)
         -> Request
     {
         let mutableURLRequest = URLRequest(method, URLString, headers: headers)
@@ -103,8 +103,8 @@ extension Manager {
 
         - returns: The created download request.
     */
-    public func download(_ urlRequest: URLRequestConvertible, destination: Request.DownloadFileDestination) -> Request {
-        return download(.request(urlRequest.urlRequest), destination: destination)
+    public func download(_ urlRequest: URLRequestConvertible, destination: @escaping Request.DownloadFileDestination) -> Request {
+        return download(Manager.Downloadable.request(urlRequest.urlRequest), destination: destination)
     }
 
     // MARK: Resume Data
@@ -121,8 +121,8 @@ extension Manager {
 
         - returns: The created download request.
     */
-    public func download(_ resumeData: Data, destination: Request.DownloadFileDestination) -> Request {
-        return download(.resumeData(resumeData), destination: destination)
+    public func download(_ resumeData: Data, destination: @escaping Request.DownloadFileDestination) -> Request {
+        return download(resumeData, destination: destination)
     }
 }
 
