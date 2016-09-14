@@ -139,14 +139,14 @@ class ManagerTestCase: BaseTestCase {
         manager.startRequestsImmediately = false
 
         let URL = Foundation.URL(string: "https://httpbin.org/get")!
-        let URLRequest = Foundation.URLRequest(url: URL)
+        let URLRequestForhttpBin = Foundation.URLRequest(url: URL)
 
         let expectation = self.expectation(description: "\(URL)")
 
         var response: HTTPURLResponse?
 
         // When
-        manager.request(URLRequest)
+        manager.request(URLRequestForhttpBin)
             .response { _, responseResponse, _, _ in
                 response = responseResponse
                 expectation.fulfill()

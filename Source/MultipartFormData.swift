@@ -402,10 +402,10 @@ public class MultipartFormData {
 
         if FileManager.default.fileExists(atPath: fileURL.path) {
             let failureReason = "A file already exists at the given file URL: \(fileURL)"
-            throw Error.error(domain: NSURLErrorDomain, code: NSURLErrorBadURL, failureReason: failureReason)
+            throw AlamofireCustomError.error(domain: NSURLErrorDomain, code: NSURLErrorBadURL, failureReason: failureReason)
         } else if !fileURL.isFileURL {
             let failureReason = "The URL does not point to a valid file: \(fileURL)"
-            throw Error.error(domain: NSURLErrorDomain, code: NSURLErrorBadURL, failureReason: failureReason)
+            throw AlamofireCustomError.error(domain: NSURLErrorDomain, code: NSURLErrorBadURL, failureReason: failureReason)
         }
 
         let outputStream: OutputStream
@@ -414,7 +414,7 @@ public class MultipartFormData {
             outputStream = possibleOutputStream
         } else {
             let failureReason = "Failed to create an output stream with the given URL: \(fileURL)"
-            throw Error.error(domain: NSURLErrorDomain, code: NSURLErrorCannotOpenFile, failureReason: failureReason)
+            throw AlamofireCustomError.error(domain: NSURLErrorDomain, code: NSURLErrorCannotOpenFile, failureReason: failureReason)
         }
 
         outputStream.open()
@@ -481,7 +481,7 @@ public class MultipartFormData {
                 encoded.append(buffer, length: bytesRead)
             } else if bytesRead < 0 {
                 let failureReason = "Failed to read from input stream: \(inputStream)"
-                error = Error.error(domain: NSURLErrorDomain, code: .inputStreamReadFailed, failureReason: failureReason)
+                error = AlamofireCustomError.error(domain: NSURLErrorDomain, code: .inputStreamReadFailed, failureReason: failureReason)
                 break
             } else {
                 break
@@ -540,7 +540,7 @@ public class MultipartFormData {
                 try writeBuffer(&buffer, toOutputStream: outputStream)
             } else if bytesRead < 0 {
                 let failureReason = "Failed to read from input stream: \(inputStream)"
-                throw Error.error(domain: NSURLErrorDomain, code: .inputStreamReadFailed, failureReason: failureReason)
+                throw AlamofireCustomError.error(domain: NSURLErrorDomain, code: .inputStreamReadFailed, failureReason: failureReason)
             } else {
                 break
             }
@@ -581,7 +581,7 @@ public class MultipartFormData {
 
                 if bytesWritten < 0 {
                     let failureReason = "Failed to write to output stream: \(outputStream)"
-                    throw Error.error(domain: NSURLErrorDomain, code: .outputStreamWriteFailed, failureReason: failureReason)
+                    throw AlamofireCustomError.error(domain: NSURLErrorDomain, code: .outputStreamWriteFailed, failureReason: failureReason)
                 }
 
                 bytesToWrite -= bytesWritten
@@ -645,6 +645,6 @@ public class MultipartFormData {
 
     private func setBodyPartError(code: Int, failureReason: String) {
         guard bodyPartError == nil else { return }
-        bodyPartError = Error.error(domain: NSURLErrorDomain, code: code, failureReason: failureReason)
+        bodyPartError = AlamofireCustomError.error(domain: NSURLErrorDomain, code: code, failureReason: failureReason)
     }
 }

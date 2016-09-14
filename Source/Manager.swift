@@ -227,7 +227,9 @@ public class Manager {
     */
     public func request(_ urlRequest: URLRequestConvertible) -> Request {
         var dataTask: URLSessionDataTask!
-        queue.sync { dataTask = self.session.dataTask(with: urlRequest.urlRequest) }
+        queue.sync {
+            dataTask = self.session.dataTask(with: urlRequest.urlRequest)
+        }
 
         let request = Request(session: session, task: dataTask)
         delegate[request.delegate.task] = request.delegate
@@ -294,8 +296,8 @@ public class Manager {
             - parameter session: The session object that was invalidated.
             - parameter error:   The error that caused invalidation, or nil if the invalidation was explicit.
         */
-        public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: NSError?) {
-            sessionDidBecomeInvalidWithError?(session, error)
+        public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+            sessionDidBecomeInvalidWithError?(session, error as? NSError)
         }
 
         /**
@@ -398,7 +400,7 @@ public class Manager {
             task: URLSessionTask,
             willPerformHTTPRedirection response: HTTPURLResponse,
             newRequest request: URLRequest,
-            completionHandler: (URLRequest?) -> Void)
+            completionHandler: @escaping (URLRequest?) -> Void)
         {
             guard taskWillPerformHTTPRedirectionWithCompletion == nil else {
                 taskWillPerformHTTPRedirectionWithCompletion?(session, task, response, request, completionHandler)
@@ -508,11 +510,11 @@ public class Manager {
             - parameter task:    The task whose request finished transferring data.
             - parameter error:   If an error occurred, an error object indicating how the transfer failed, otherwise nil.
         */
-        public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: NSError?) {
+        public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
             if let taskDidComplete = taskDidComplete {
-                taskDidComplete(session, task, error)
+                taskDidComplete(session, task, error as? NSError)
             } else if let delegate = self[task] {
-                delegate.urlSession(session, task: task, didCompleteWithError: error)
+                delegate.urlSession(session, task: task, didCompleteWithError: error as? NSError)
             }
 
             NotificationCenter.default.post(name: Notification.Name(rawValue: Notifications.Task.DidComplete), object: task)
@@ -560,7 +562,7 @@ public class Manager {
             _ session: URLSession,
             dataTask: URLSessionDataTask,
             didReceive response: URLResponse,
-            completionHandler: (URLSession.ResponseDisposition) -> Void)
+            completionHandler: @escaping (URLSession.ResponseDisposition) -> Void)
         {
             guard dataTaskDidReceiveResponseWithCompletion == nil else {
                 dataTaskDidReceiveResponseWithCompletion?(session, dataTask, response, completionHandler)

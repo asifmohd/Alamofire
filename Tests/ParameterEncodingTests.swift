@@ -125,7 +125,7 @@ class URLParameterEncodingTestCase: ParameterEncodingTestCase {
         let (URLRequest, _) = encoding.encode(self.urlRequest, parameters: parameters)
 
         // Then
-        XCTAssertEqual(URLRequest.url?.query ?? "", "foo=1", "query is incorrect")
+        XCTAssertEqual(URLRequest.url?.query ?? "", "foo=true", "query is incorrect")
     }
 
     func testURLParameterEncodeStringKeyArrayValueParameter() {

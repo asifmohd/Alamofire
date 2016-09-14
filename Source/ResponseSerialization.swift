@@ -164,7 +164,7 @@ extension Request {
 
             guard let validData = data else {
                 let failureReason = "Data could not be serialized. Input data was nil."
-                let error = Error.error(code: .dataSerializationFailed, failureReason: failureReason)
+                let error = AlamofireCustomError.error(code: .dataSerializationFailed, failureReason: failureReason)
                 return .failure(error)
             }
 
@@ -213,7 +213,7 @@ extension Request {
 
             guard let validData = data else {
                 let failureReason = "String could not be serialized. Input data was nil."
-                let error = Error.error(code: .stringSerializationFailed, failureReason: failureReason)
+                let error = AlamofireCustomError.error(code: .stringSerializationFailed, failureReason: failureReason)
                 return .failure(error)
             }
 
@@ -231,7 +231,7 @@ extension Request {
                 return .success(string)
             } else {
                 let failureReason = "String could not be serialized with encoding: \(actualEncoding)"
-                let error = Error.error(code: .stringSerializationFailed, failureReason: failureReason)
+                let error = AlamofireCustomError.error(code: .stringSerializationFailed, failureReason: failureReason)
                 return .failure(error)
             }
         }
@@ -285,7 +285,7 @@ extension Request {
 
             guard let validData = data, validData.count > 0 else {
                 let failureReason = "JSON could not be serialized. Input data was nil or zero length."
-                let error = Error.error(code: .jsonSerializationFailed, failureReason: failureReason)
+                let error = AlamofireCustomError.error(code: .jsonSerializationFailed, failureReason: failureReason)
                 return .failure(error)
             }
 
@@ -344,7 +344,7 @@ extension Request {
 
             guard let validData = data, validData.count > 0 else {
                 let failureReason = "Property list could not be serialized. Input data was nil or zero length."
-                let error = Error.error(code: .propertyListSerializationFailed, failureReason: failureReason)
+                let error = AlamofireCustomError.error(code: .propertyListSerializationFailed, failureReason: failureReason)
                 return .failure(error)
             }
 

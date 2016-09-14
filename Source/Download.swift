@@ -154,7 +154,7 @@ extension Request {
             let directoryURLs = FileManager.default.urls(for: directory, in: domain)
 
             if !directoryURLs.isEmpty {
-                return try! directoryURLs[0].appendingPathComponent(response.suggestedFilename!)
+                return directoryURLs[0].appendingPathComponent(response.suggestedFilename!)
             }
 
             return temporaryURL

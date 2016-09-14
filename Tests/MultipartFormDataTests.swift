@@ -60,7 +60,7 @@ struct BoundaryGenerator {
 
 private func temporaryFileURL() -> URL {
     let tempDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory())
-    let directoryURL = try! tempDirectoryURL.appendingPathComponent("com.alamofire.test/multipart.form.data")
+    let directoryURL = tempDirectoryURL.appendingPathComponent("com.alamofire.test/multipart.form.data")
 
     let fileManager = FileManager.default
     do {
@@ -70,7 +70,7 @@ private func temporaryFileURL() -> URL {
     }
 
     let fileName = UUID().uuidString
-    let fileURL = try! directoryURL.appendingPathComponent(fileName)
+    let fileURL = directoryURL.appendingPathComponent(fileName)
 
     return fileURL
 }
@@ -809,7 +809,7 @@ class MultipartFormDataWriteEncodedDataToDiskTestCase: BaseTestCase {
 class MultipartFormDataFailureTestCase: BaseTestCase {
     func testThatAppendingFileBodyPartWithInvalidLastPathComponentReturnsError() {
         // Given
-        let fileURL = URL(string: "")!
+        let fileURL = NSURL(string: "") as! URL
         let multipartFormData = MultipartFormData()
         multipartFormData.appendBodyPart(fileURL: fileURL, name: "empty_data")
 
@@ -830,7 +830,7 @@ class MultipartFormDataFailureTestCase: BaseTestCase {
             XCTAssertEqual(error.code, NSURLErrorBadURL, "error code does not match expected value")
 
             if let failureReason = error.userInfo[NSLocalizedFailureReasonErrorKey] as? String {
-                let expectedFailureReason = "Failed to extract the fileName of the provided URL: \(fileURL)"
+                let expectedFailureReason = "The file URL does not point to a file URL: \(fileURL)"
                 XCTAssertEqual(failureReason, expectedFailureReason, "failure reason does not match expected value")
             } else {
                 XCTFail("failure reason should not be nil")

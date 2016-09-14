@@ -38,7 +38,7 @@ class RequestInitializationTestCase: BaseTestCase {
         XCTAssertNotNil(request.request, "request URL request should not be nil")
         XCTAssertEqual(request.request?.httpMethod ?? "", "GET", "request HTTP method should match expected value")
         XCTAssertEqual(request.request?.urlString ?? "", URLString, "request URL string should be equal")
-        XCTAssertNil(request.response, "request response should be nil")
+        XCTAssertNil(request.responseHTTPURL, "request response should be nil")
     }
 
     func testRequestClassMethodWithMethodAndURLAndParameters() {
@@ -53,7 +53,7 @@ class RequestInitializationTestCase: BaseTestCase {
         XCTAssertEqual(request.request?.httpMethod ?? "", "GET", "request HTTP method should match expected value")
         XCTAssertNotEqual(request.request?.urlString ?? "", URLString, "request URL string should be equal")
         XCTAssertEqual(request.request?.url?.query ?? "", "foo=bar", "query is incorrect")
-        XCTAssertNil(request.response, "request response should be nil")
+        XCTAssertNil(request.responseHTTPURL, "request response should be nil")
     }
 
     func testRequestClassMethodWithMethodURLParametersAndHeaders() {
@@ -73,7 +73,7 @@ class RequestInitializationTestCase: BaseTestCase {
         let authorizationHeader = request.request?.value(forHTTPHeaderField: "Authorization") ?? ""
         XCTAssertEqual(authorizationHeader, "123456", "Authorization header is incorrect")
 
-        XCTAssertNil(request.response, "response should be nil")
+        XCTAssertNil(request.responseHTTPURL, "response should be nil")
     }
 }
 

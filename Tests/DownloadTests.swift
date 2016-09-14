@@ -42,7 +42,7 @@ class DownloadInitializationTestCase: BaseTestCase {
         XCTAssertNotNil(request.request, "request should not be nil")
         XCTAssertEqual(request.request?.httpMethod ?? "", "GET", "request HTTP method should be GET")
         XCTAssertEqual(request.request?.urlString ?? "", urlString, "request URL string should be equal")
-        XCTAssertNil(request.response, "response should be nil")
+        XCTAssertNil(request.responseHTTPURL, "response should be nil")
     }
 
     func testDownloadClassMethodWithMethodURLHeadersAndDestination() {
@@ -61,7 +61,7 @@ class DownloadInitializationTestCase: BaseTestCase {
         let authorizationHeader = request.request?.value(forHTTPHeaderField: "Authorization") ?? ""
         XCTAssertEqual(authorizationHeader, "123456", "Authorization header is incorrect")
 
-        XCTAssertNil(request.response, "response should be nil")
+        XCTAssertNil(request.responseHTTPURL, "response should be nil")
     }
 }
 
@@ -79,7 +79,7 @@ class DownloadResponseTestCase: BaseTestCase {
     }()
 
     var randomCachesFileURL: URL {
-        return try! cachesURL.appendingPathComponent("\(UUID().uuidString).json")
+        return cachesURL.appendingPathComponent("\(UUID().uuidString).json")
     }
 
     func testDownloadRequest() {
@@ -137,7 +137,7 @@ class DownloadResponseTestCase: BaseTestCase {
 
             if let file = filteredContents.first as? URL {
                 XCTAssertEqual(
-                    file.lastPathComponent ?? "",
+                    file.lastPathComponent,
                     "\(suggestedFilename)",
                     "filename should be \(suggestedFilename)"
                 )
@@ -169,7 +169,7 @@ class DownloadResponseTestCase: BaseTestCase {
         let fileManager = FileManager.default
         let directory = fileManager.urls(for: searchPathDirectory, in: self.searchPathDomain)[0]
         let filename = "test_download_data"
-        let fileURL = try! directory.appendingPathComponent(filename)
+        let fileURL = directory.appendingPathComponent(filename)
 
         let expectation = self.expectation(description: "Bytes download progress should be reported: \(urlString)")
 
